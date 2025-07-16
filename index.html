@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Art: Interactive Developer's Desk</title>
+    <style>
+        :root {
+            --dark-bg: #0f172a;
+            --dark-wall: #1e293b;
+            --dark-desk: #334155;
+            --dark-accent: #475569;
+            --dark-text: #e0e7ff;
+
+            --light-bg: #f1f5f9;
+            --light-wall: #e2e8f0;
+            --light-desk: #cbd5e1;
+            --light-accent: #94a3b8;
+            --light-text: #1e293b;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: var(--dark-bg);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .artboard {
+            width: 800px;
+            height: 500px;
+            background: var(--dark-wall);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        .desk {
+            width: 100%;
+            height: 250px;
+            background: var(--dark-desk);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-top: 5px solid var(--dark-accent);
+            transition: background 0.3s ease, border-top-color 0.3s ease;
+        }
+        
+        /* --- Light Mode --- */
+        body.light-mode { background: var(--light-bg); }
+        body.light-mode .artboard { background: var(--light-wall); }
+        body.light-mode .desk { background: var(--light-desk); border-top-color: var(--light-accent); }
+        body.light-mode .monitor-frame, body.light-mode .ai-assistant { background: #d1d5db; }
+        body.light-mode .keyboard-base { background: #e5e7eb; }
+        body.light-mode .key { background: #fff; border-bottom-color: #d1d5db; }
+        body.light-mode .desktop-widget { background: rgba(255,255,255,0.5); color: var(--light-text); border-color: rgba(0,0,0,0.1);}
+        body.light-mode .book { background: #a5b4fc; }
+        body.light-mode .mouse { background: #e5e7eb; }
+
+        /* --- DESK ITEMS --- */
+        .monitor {
+            position: absolute;
+            bottom: 250px;
+            z-index: 10;
+        }
+        .monitor-frame {
+            width: 320px;
+            height: 180px;
+            background-color: #0f172a;
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .monitor-stand {
+            width: 10px; height: 50px; background-color: #4b5563;
+            position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%);
+        }
+        .monitor-base {
+            width: 120px; height: 8px; background-color: #4b5563;
+            position: absolute; bottom: -58px; left: 50%; transform: translateX(-50%);
+            border-radius: 4px;
+        }
+        .screen {
+            width: 100%; height: 100%; background-color: #0d1117;
+            border-radius: 5px; overflow: hidden; position: relative;
+            font-family: 'Courier New', monospace; padding: 10px; box-sizing: border-box;
+        }
+        .screen::after { /* Screen reflection */
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent 50%);
+            pointer-events: none;
+        }
+
+        .main-monitor { left: 50%; transform: translateX(-50%); }
+        .side-monitor { left: 100px; transform: translateX(-50%) scale(0.9); }
+
+        /* Screen Content */
+        .terminal-line {
+            color: #a5b4fc; font-size: 12px; white-space: pre;
+        }
+        .terminal-line::before {
+            content: '> npm run dev';
+            animation: funny-messages 20s infinite;
+        }
+        .terminal-line::after {
+            content: '▋';
+            animation: blink-cursor 1s infinite;
+        }
+        @keyframes funny-messages {
+            0%, 15% { content: '> npm run dev'; }
+            16%, 31% { content: '> It works on my machine...'; }
+            32%, 47% { content: '> Searching Stack Overflow...'; }
+            48%, 63% { content: '> Why is this not working?!'; }
+            64%, 79% { content: '> One more coffee should fix it.'; }
+            80%, 95% { content: '> git push --force'; }
+            96%, 100% { content: '> Compiling... again.'; }
+        }
+        @keyframes blink-cursor { 50% { opacity: 0; } }
+        
+        .figma-screen .rect { position: absolute; background: #a78bfa; }
+        .figma-screen .r1 { top: 20px; left: 20px; width: 100px; height: 50px; }
+        .figma-screen .r2 { top: 80px; left: 50px; width: 150px; height: 40px; background: #f472b6; }
+
+        .keyboard {
+            width: 300px; height: 100px; position: absolute; bottom: 80px;
+            left: 50%; transform: translateX(-50%); z-index: 15;
+        }
+        .keyboard-base {
+            width: 100%; height: 100%; background: #1e293b; border-radius: 8px;
+            padding: 8px; display: grid; grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(5, 1fr); gap: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        .key {
+            background: #475569; border-radius: 3px; border-bottom: 2px solid #334155;
+            transition: transform 0.1s;
+        }
+        .key:hover { transform: translateY(-2px); }
+        .key.space { grid-column: span 5; }
+        .keyboard-glow {
+            position: absolute; inset: 0; border-radius: 8px;
+            background: linear-gradient(90deg, #ef4444, #f97316, #eab308, #84cc16, #22c55e, #06b6d4, #3b82f6, #8b5cf6, #d946ef);
+            background-size: 300% 300%;
+            animation: rgb-flow 5s infinite linear;
+            filter: blur(10px);
+            z-index: -1;
+        }
+        @keyframes rgb-flow {
+            0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; }
+        }
+
+        .mouse {
+            width: 50px; height: 80px; background: #1e293b;
+            position: absolute; bottom: 100px; right: 100px;
+            border-radius: 25px 25px 40px 40px; z-index: 14;
+        }
+        .mouse::after {
+            content: ''; position: absolute; width: 4px; height: 20px;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            background: #06b6d4; border-radius: 2px;
+            box-shadow: 0 0 5px #06b6d4;
+        }
+
+        .mug {
+            position: absolute; bottom: 180px; right: 30px; z-index: 16;
+        }
+        .cup {
+            width: 50px; height: 60px; background: #fff; border-radius: 5px 5px 25px 25px;
+        }
+        .cup::before {
+            content: ''; width: 15px; height: 30px; border: 6px solid #fff;
+            position: absolute; right: -20px; top: 10px; border-radius: 0 10px 10px 0;
+        }
+        .cup-steam {
+            position: absolute; width: 3px; height: 15px; background: rgba(255,255,255,0.5);
+            bottom: 60px; left: 23px; border-radius: 50%;
+            animation: steam-rise 2s infinite linear;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .mug:hover .cup-steam { opacity: 1; }
+        @keyframes steam-rise { to { transform: translateY(-20px); opacity: 0; } }
+
+        .book-stack { position: absolute; bottom: 0; left: 60px; z-index: 5; }
+        .book {
+            width: 50px; height: 180px; background: #4f46e5;
+            position: absolute; bottom: 0; border-radius: 5px 2px 2px 5px;
+            transform-origin: left; transition: transform 0.3s ease;
+        }
+        .book:hover { transform: rotateY(-20deg) translateX(5px); }
+        .b1 { left: 0; z-index: 3; }
+        .b2 { left: 10px; background: #059669; z-index: 2; }
+        .b3 { left: 20px; background: #d97706; z-index: 1; }
+
+        .ai-assistant {
+            width: 40px; height: 40px; background: #1e293b;
+            position: absolute; bottom: 250px; left: 40px;
+            border-radius: 50%; z-index: 11;
+        }
+        .ai-assistant::after {
+            content: ''; position: absolute; width: 8px; height: 8px;
+            background: #22d3ee; border-radius: 50%;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px #22d3ee;
+            animation: ai-pulse 2s infinite;
+        }
+        @keyframes ai-pulse { 50% { opacity: 0.5; } }
+
+        /* --- WIDGET & TOGGLE --- */
+        .desktop-widget {
+            position: absolute; top: 20px; right: 20px; width: 180px;
+            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(5px);
+            border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 20; padding: 10px; color: var(--dark-text); box-sizing: border-box;
+        }
+        .clock { font-size: 24px; font-weight: bold; text-align: center; }
+        .reminders-title { font-size: 12px; margin-top: 5px; border-bottom: 1px solid var(--dark-accent); }
+        .reminder-list { font-size: 11px; list-style: none; padding: 5px 0 0; margin: 0; }
+        .reminder-list li { margin-bottom: 4px; }
+
+        .theme-toggle {
+            position: absolute; top: 20px; left: 20px; width: 50px; height: 25px;
+            background: #475569; border-radius: 25px; cursor: pointer;
+            z-index: 20; padding: 3px;
+        }
+        .toggle-knob {
+            width: 19px; height: 19px; background: #fff;
+            border-radius: 50%; transition: transform 0.3s ease;
+        }
+        body.light-mode .toggle-knob { transform: translateX(25px); }
+
+    </style>
+</head>
+<body>
+    <div class="artboard">
+        <div class="desk"></div>
+        <div class="theme-toggle">
+            <div class="toggle-knob"></div>
+        </div>
+
+        <div class="monitor side-monitor">
+            <div class="monitor-frame">
+                <div class="screen figma-screen">
+                    <div class="rect r1"></div>
+                    <div class="rect r2"></div>
+                </div>
+            </div>
+            <div class="monitor-stand"></div><div class="monitor-base"></div>
+        </div>
+        <div class="monitor main-monitor">
+            <div class="monitor-frame">
+                <div class="screen">
+                    <div class="terminal-line"></div>
+                </div>
+            </div>
+            <div class="monitor-stand"></div><div class="monitor-base"></div>
+        </div>
+        
+        <div class="keyboard">
+            <div class="keyboard-glow"></div>
+            <div class="keyboard-base">
+                <!-- Keys are decorative, generated by grid -->
+                <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div><div class="key space"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div>
+            </div>
+        </div>
+        
+        <div class="mouse"></div>
+        <div class="mug">
+            <div class="cup"></div>
+            <div class="cup-steam"></div>
+        </div>
+        <div class="book-stack">
+            <div class="book b1"></div><div class="book b2"></div><div class="book b3"></div>
+        </div>
+        <div class="ai-assistant"></div>
+
+        <div class="desktop-widget">
+            <div class="clock" id="clock"></div>
+            <div class="reminders-title">Reminders</div>
+            <ul class="reminder-list">
+                <li>Daily Standup @ 9 AM</li>
+                <li>Fix prod bugs!!</li>
+                <li>Deploy to staging</li>
+                <li>Team Lunch @ 1 PM</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const clockElement = document.getElementById('clock');
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            clockElement.textContent = `${hours}:${minutes}`;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+
+</body>
+</html>
